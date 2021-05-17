@@ -10,28 +10,41 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+from mainForm import Ui_MainWindowForm
+
 
 class Ui_MainWindow(object):
+
+    # def openWindow(self):
+
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(342, 310)
+        MainWindow.resize(312, 193)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.widget = QtWidgets.QWidget(self.centralwidget)
-        self.widget.setGeometry(QtCore.QRect(40, 80, 135, 70))
-        self.widget.setObjectName("widget")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.widget)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.label = QtWidgets.QLabel(self.widget)
-        self.label.setObjectName("label")
-        self.verticalLayout.addWidget(self.label)
-        self.lineEdit = QtWidgets.QLineEdit(self.widget)
-        self.lineEdit.setObjectName("lineEdit")
-        self.verticalLayout.addWidget(self.lineEdit)
-        self.pushButton = QtWidgets.QPushButton(self.widget)
+        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton.setGeometry(QtCore.QRect(110, 120, 75, 23))
         self.pushButton.setObjectName("pushButton")
-        self.verticalLayout.addWidget(self.pushButton)
+
+        # self.pushButton.clicked.connect(self.openWindow)
+
+        self.splitter = QtWidgets.QSplitter(self.centralwidget)
+        self.splitter.setGeometry(QtCore.QRect(60, 80, 180, 20))
+        self.splitter.setOrientation(QtCore.Qt.Horizontal)
+        self.splitter.setObjectName("splitter")
+        self.label_2 = QtWidgets.QLabel(self.splitter)
+        self.label_2.setObjectName("label_2")
+        self.passwordEdit = QtWidgets.QLineEdit(self.splitter)
+        self.passwordEdit.setObjectName("passwordEdit")
+        self.splitter_2 = QtWidgets.QSplitter(self.centralwidget)
+        self.splitter_2.setGeometry(QtCore.QRect(60, 50, 180, 20))
+        self.splitter_2.setOrientation(QtCore.Qt.Horizontal)
+        self.splitter_2.setObjectName("splitter_2")
+        self.label = QtWidgets.QLabel(self.splitter_2)
+        self.label.setObjectName("label")
+        self.usernameEdit = QtWidgets.QLineEdit(self.splitter_2)
+        self.usernameEdit.setObjectName("usernameEdit")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -43,5 +56,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "Result:"))
-        self.pushButton.setText(_translate("MainWindow", "Search"))
+        self.pushButton.setText(_translate("MainWindow", "Login"))
+        self.label_2.setText(_translate("MainWindow", "Password"))
+        self.label.setText(_translate("MainWindow", "Username"))
