@@ -2,16 +2,18 @@ import requests
 import json
 from bs4 import BeautifulSoup
 
+
 class GetDriverBio:
 
-    def __init__(self,career="Formula One World Championship career"):
+    def __init__(self, career="Formula One World Championship career"):
 
         self.career = career
 
     @property
     def drivers_data(self):
 
-        data = requests.get('http://ergast.com/api/f1/drivers.json?limit=10000')
+        data = requests.get(
+            'http://ergast.com/api/f1/drivers.json?limit=10000')
         y = json.loads(data.text)
         drivers_list = y['MRData']['DriverTable']['Drivers']
         return drivers_list
@@ -29,30 +31,60 @@ class GetDriverBio:
         t_headers = []
         table_row = []
         career = ''
-        for th,tr in zip(table.find_all("th"),table.find_all("tr")):
+        for th, tr in zip(table.find_all("th"), table.find_all("tr")):
             if(th.has_attr('class')):
                 if "infobox-header" in th['class']:
                     career = th.text.replace('\n', ' ').strip()
                     continue
             if career == self.career:
                 t_headers.append(th.text.replace('\n', ' ').strip())
-                for td in tr.find_all("td"): 
+                for td in tr.find_all("td"):
                     table_row.append(td.text.replace('\n', '').strip())
-        a_zip = zip(t_headers , table_row)
+        a_zip = zip(t_headers, table_row)
         return dict(a_zip)
 
-
-    def wiki_stats_to_dict(self,url):
+    def wiki_stats_to_dict(self, url):
 
         response = requests.get(url)
         soup = BeautifulSoup(response.content, 'html.parser')
-        table = soup.find("table",{'class' : 'infobox biography vcard'})
+        table = soup.find("table", {'class': 'infobox biography vcard'})
         if table == None:
-            table = soup.find("table",{'class' : 'infobox vcard'})
+            table = soup.find("table", {'class': 'infobox vcard'})
         if table == None:
             return None
         return self.table_to_dict(table)
 
+    def get_all_driver_data(self):
+        # TODO: optimize
+        # We can optimize this if use generator
+        # Because of you parse 10000 elements it costs too much time
+        # Now I want to  explain about it:
+        # Now you just print every dict one by one but in future we'll need to
+        # get ALL list of dictionaries, so i suggest use yield statement.
+        # It's just like return, but it returns only once and returns a generator
+        # object like zip/map e.g.
+        # To get all driver one by one with generator we can just use for loop.
+        # Below I'll write comment with copy of this method, but on generator
+        for driver in self.drivers_data:
+            driver_dat = self.wiki_stats_to_dict(
+                self.get_driver_wiki(driver['familyName'], driver['givenName']))
+            if driver_dat == None:
+                print("Driver Data not present in Wiki")
+                continue
+            if len(driver_dat) == 0:
+                print("Driver has no F1 career")
+                continue
+            driver_dat["familyName"] = driver['familyName']
+            driver_dat["givenName"] = driver['givenName']
+            driver_dat["dateOfBirth"] = driver['dateOfBirth']
+            print(driver_dat)
+
+
+# Usage
+drvbio = GetDriverBio()
+drvbio.get_all_driver_data()
+
+"""
     def get_all_driver_data(self):
         for driver in self.drivers_data:
             driver_dat = self.wiki_stats_to_dict(self.get_driver_wiki(driver['familyName'], driver['givenName']))
@@ -65,8 +97,11 @@ class GetDriverBio:
             driver_dat["familyName"] = driver['familyName']
             driver_dat["givenName"] = driver['givenName']
             driver_dat["dateOfBirth"] = driver['dateOfBirth']
-            print(driver_dat)
+
+            yield driver_dat
 
 # Usage
 drvbio = GetDriverBio()
-drvbio.get_all_driver_data()
+for driver_data in drvbio.get_all_driver_data():
+    print(driver_data)
+"""
