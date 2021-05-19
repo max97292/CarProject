@@ -3,16 +3,6 @@ from bs4 import BeautifulSoup
 from pprint import pprint as pp
 
 
-class FormulaParseRes:
-    """
-    Class to save result of parsing
-    """
-
-    def __init__(self, name, url):
-        self.name = name
-        self.url = url
-
-
 class Formula1Parser:
     base_url = 'https://www.formula1.com'
 
@@ -65,5 +55,5 @@ class Formula1Parser:
 
 
 # Usage
-for driver_data in Formula1Parser.get_drivers():
-    pp(driver_data)
+# for driver_data in Formula1Parser.get_drivers():
+#     pp(driver_data)
