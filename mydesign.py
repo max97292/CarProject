@@ -14,10 +14,6 @@ from mainForm import Ui_MainWindowForm
 
 
 class Ui_MainWindow(object):
-
-    # def openWindow(self):
-
-
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(312, 193)
@@ -26,9 +22,6 @@ class Ui_MainWindow(object):
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(110, 120, 75, 23))
         self.pushButton.setObjectName("pushButton")
-
-        # self.pushButton.clicked.connect(self.openWindow)
-
         self.splitter = QtWidgets.QSplitter(self.centralwidget)
         self.splitter.setGeometry(QtCore.QRect(60, 80, 180, 20))
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
@@ -49,7 +42,6 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
