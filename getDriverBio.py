@@ -18,6 +18,24 @@ class GetDriverBio:
         drivers_list = y['MRData']['DriverTable']['Drivers']
         return drivers_list
 
+    def get_driver_standings(self, family_name, given_name):
+
+        driver_id = self.get_driver_id(family_name, given_name)
+        data = requests.get(
+            'http://ergast.com/api/f1/drivers/{}/driverStandings.json?limit=1000'.format(driver_id))
+        y = json.loads(data.text)
+        driver_standings_list = y['MRData']['StandingsTable']['StandingsLists']
+        return driver_standings_list
+
+    def get_driver_constructors(self, family_name, given_name):
+
+        driver_id = self.get_driver_id(family_name, given_name)
+        data = requests.get(
+            'http://ergast.com/api/f1/drivers/{}/constructors.json?limit=1000'.format(driver_id))
+        y = json.loads(data.text)
+        driver_constructors_list = y['MRData']['ConstructorTable']['Constructors']
+        return driver_constructors_list
+
     def get_driver_wiki(self, family_name, given_name):
 
         for driver in self.drivers_data:
