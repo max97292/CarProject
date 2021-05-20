@@ -37,7 +37,7 @@ class CompileParsed:
 
     # FIXME: need optimization, too much RAM use
     @classmethod
-    def compile(cls, limit=1000):
+    def compile(cls, limit=5):
         drvbio = getDriverBio.GetDriverBio()
         for ergast_driver in drvbio.get_all_driver_data(limit):
             cls.to_dict(ergast_driver['Name'] if 'Name' in ergast_driver else 'N/A',
