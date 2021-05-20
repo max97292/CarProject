@@ -1,40 +1,41 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from mydesign import Ui_MainWindow
-from mainForm import Ui_MainWindowForm
+from searchForm import Ui_SearchWindow
 import sys
 from test import CompileParsed
 
-class mainForm(QtWidgets.QMainWindow):
+class searchForm(QtWidgets.QMainWindow):
     def __init__(self):
-        super(mainForm, self).__init__()
-        self.ui = Ui_MainWindowForm()
+        super(searchForm, self).__init__()
+        self.ui = Ui_SearchWindow()
         self.ui.setupUi(self)
 
+        nationality = []
         cp = CompileParsed.compile()
         for driver in cp:
-            self.ui.comboBox.addItem(driver['name'])
-            self.ui.comboBoxTeam.addItem(driver['team'])
-            self.ui.comboBoxDate.addItem(driver['birth_date'])
+            if driver['nationality'] not in nationality:
+                nationality.append(driver['nationality'])
+        self.ui.comboBoxNationality.addItems(nationality)
 
-class mywindow(QtWidgets.QMainWindow):
+class loginForm(QtWidgets.QMainWindow):
     def __init__(self):
-        super(mywindow, self).__init__()
+        super(loginForm, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.mainForm = mainForm()
+        self.searchForm = searchForm()
 
         self.ui.pushButton.clicked.connect(self.btnClicked)
 
     def btnClicked(self):
         if self.ui.passwordEdit.text() == 'pass':
             self.window().hide()
-            self.mainForm.show()
+            self.searchForm.show()
             # QMessageBox.about(self, "Title", "Message")
 
 
 app = QtWidgets.QApplication([])
-application = mywindow()
+application = loginForm()
 application.show()
 
 sys.exit(app.exec())
