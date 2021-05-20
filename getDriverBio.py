@@ -10,47 +10,46 @@ class GetDriverBio:
 
         self.career = career
 
-    @property
-    def drivers_data(self):
+    def drivers_data(self, limit):
 
         data = requests.get(
-            'http://ergast.com/api/f1/drivers.json?limit=5')
+            f'http://ergast.com/api/f1/drivers.json?limit={limit}')
         y = json.loads(data.text)
         drivers_list = y['MRData']['DriverTable']['Drivers']
         return drivers_list
 
-    def get_driver_standings(self, family_name, given_name):
+    def get_driver_standings(self, family_name, given_name, limit):
 
-        driver_id = self.get_driver_id(family_name, given_name)
+        driver_id = self.get_driver_id(family_name, given_name, limit)
         data = requests.get(
-            'http://ergast.com/api/f1/drivers/{}/driverStandings.json?limit=5'.format(driver_id))
+            f'http://ergast.com/api/f1/drivers/{driver_id}/driverStandings.json?limit={limit}')
         y = json.loads(data.text)
         driver_standings_list = y['MRData']['StandingsTable']['StandingsLists']
         return driver_standings_list
 
-    def get_driver_constructors(self, family_name, given_name):
+    def get_driver_constructors(self, family_name, given_name, limit):
 
-        driver_id = self.get_driver_id(family_name, given_name)
+        driver_id = self.get_driver_id(family_name, given_name, limit)
         data = requests.get(
-            'http://ergast.com/api/f1/drivers/{}/constructors.json?limit=5'.format(driver_id))
+            f'http://ergast.com/api/f1/drivers/{driver_id}/constructors.json?limit={limit}')
         y = json.loads(data.text)
         driver_constructors_list = y['MRData']['ConstructorTable']['Constructors']
         return driver_constructors_list
 
-    def get_driver_wiki(self, family_name, given_name):
+    def get_driver_wiki(self, family_name, given_name, limit):
 
-        for driver in self.drivers_data:
+        for driver in self.drivers_data(limit):
             if (family_name.lower() in driver['familyName'].lower() and given_name.lower() in driver[
-                'givenName'].lower()):
+                    'givenName'].lower()):
                 return driver['url']
         print("Driver " + given_name + family_name + " URL not found")
         return None
 
-    def get_driver_id(self, family_name, given_name):
+    def get_driver_id(self, family_name, given_name, limit):
 
-        for driver in self.drivers_data:
+        for driver in self.drivers_data(limit):
             if (family_name.lower() in driver['familyName'].lower() and given_name.lower() in driver[
-                'givenName'].lower()):
+                    'givenName'].lower()):
                 return driver['driverId']
         print("Driver " + given_name + family_name + " driverId not found")
         return None
@@ -83,11 +82,11 @@ class GetDriverBio:
             return None
         return self.table_to_dict(table)
 
-    def get_all_driver_data(self):
+    def get_all_driver_data(self, limit):
 
-        for driver in self.drivers_data:
+        for driver in self.drivers_data(limit):
             driver_dat = self.wiki_stats_to_dict(
-                self.get_driver_wiki(driver['familyName'], driver['givenName']))
+                self.get_driver_wiki(driver['familyName'], driver['givenName'], limit))
             if driver_dat == None:
                 print("Driver Data not present in Wiki")
                 continue
@@ -98,8 +97,8 @@ class GetDriverBio:
             driver_dat["dateOfBirth"] = driver['dateOfBirth']
             driver_dat["Nationality"] = driver['nationality']
             driver_dat["driverId"] = driver['driverId']
-            driver_dat["Standings"] = self.get_driver_standings(driver['familyName'], driver['givenName'])
-            driver_dat["Constructors"] = self.get_driver_constructors(driver['familyName'], driver['givenName'])
+            # driver_dat["Standings"] = self.get_driver_standings(driver['familyName'], driver['givenName'], limit)
+            # driver_dat["Constructors"] = self.get_driver_constructors(driver['familyName'], driver['givenName'], limit)
 
             yield driver_dat
 
