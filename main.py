@@ -1,9 +1,17 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMessageBox
-from mydesign import Ui_MainWindow
+from PyQt5 import QtWidgets
+from loginForm import Ui_LoginWindow
 from searchForm import Ui_SearchWindow
+from mainForm import Ui_MainWindow
 import sys
 from test import CompileParsed
+
+
+class mainForm(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(mainForm, self).__init__()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+
 
 class searchForm(QtWidgets.QMainWindow):
     def __init__(self):
@@ -12,26 +20,33 @@ class searchForm(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
 
         nationality = []
-        cp = CompileParsed.compile()
+        cp = CompileParsed.compile(5)
         for driver in cp:
             if driver['nationality'] not in nationality:
                 nationality.append(driver['nationality'])
         self.ui.comboBoxNationality.addItems(nationality)
 
+        self.ui.pushButtonSubmit.clicked.connect(self.onSubmit)
+
+    def onSubmit(self):
+        self.mainform = mainForm()
+        self.hide()
+        self.mainform.show()
+
+
 class loginForm(QtWidgets.QMainWindow):
     def __init__(self):
         super(loginForm, self).__init__()
-        self.ui = Ui_MainWindow()
+        self.ui = Ui_LoginWindow()
         self.ui.setupUi(self)
-        self.searchForm = searchForm()
 
-        self.ui.pushButton.clicked.connect(self.btnClicked)
+        self.ui.pushButtonLogin.clicked.connect(self.btnClicked)
 
     def btnClicked(self):
-        if self.ui.passwordEdit.text() == 'pass':
+        if self.ui.lineEditPassword.text() == 'pass':
+            self.searchform = searchForm()
             self.window().hide()
-            self.searchForm.show()
-            # QMessageBox.about(self, "Title", "Message")
+            self.searchform.show()
 
 
 app = QtWidgets.QApplication([])
